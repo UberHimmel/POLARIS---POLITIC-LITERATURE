@@ -1698,3 +1698,48 @@ button{
   cursor:pointer;
 
   }
+
+#hoaxInput{
+
+  width:100%;
+
+  height:120px;
+
+  margin-top:15px;
+
+  padding:15px;
+
+  border:none;
+
+  border-radius:15px;
+
+  resize:none;
+
+  outline:none;
+
+  background:
+  rgba(255,255,255,0.1);
+
+  color:white;
+}
+
+#checkHoaxBtn{
+
+  width:100%;
+
+  margin-top:15px;
+}
+
+#hoaxResult{
+
+  margin-top:15px;
+
+  padding:15px;
+
+  border-radius:15px;
+
+  background:
+  rgba(255,255,255,0.08);
+
+  line-height:1.6;
+  }
