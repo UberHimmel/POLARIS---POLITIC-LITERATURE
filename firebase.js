@@ -6,12 +6,17 @@ from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 const firebaseConfig = {
 
-  apiKey: "API_KAMU",
-  authDomain: "AUTH_KAMU",
-  projectId: "PROJECT_KAMU",
-  storageBucket: "STORAGE_KAMU",
-  messagingSenderId: "MESSAGE_KAMU",
-  appId: "APP_KAMU"
+  apiKey: "AIzaSyDFYMS8Uf_8APgKQhZSOko7zUMBgnK8YJE",
+
+  authDomain: "polaris-68e4b.firebaseapp.com",
+
+  projectId: "polaris-68e4b",
+
+  storageBucket: "polaris-68e4b.firebasestorage.app",
+
+  messagingSenderId: "366304330596",
+
+  appId: "1:366304330596:web:0199e45bf1426939277071"
 
 };
 
