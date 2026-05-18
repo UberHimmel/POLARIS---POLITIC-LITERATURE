@@ -10,9 +10,15 @@ import {
 }
 from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
-import { getFirestore }
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  getDocs
+}
 from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
-
 const firebaseConfig = {
 
   apiKey: "AIzaSyDFYMS8Uf_8APgKQhZSOko7zUMBgnK8YJE",
