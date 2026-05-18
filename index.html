@@ -239,11 +239,9 @@ id="xpFill">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
 
 import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  onAuthStateChanged,
-  signOut
+  getFirestore,
+  Collection,
+  getDocs
 }
 
 from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
@@ -270,9 +268,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
+const db = getFirestore(app);
 
-const provider = new GoogleAuthProvider();
+console.log("Firestore Connected 🚀")
 
 /* BUTTON */
 
@@ -341,6 +339,46 @@ onAuthStateChanged(auth,(user)=>{
   }
 
 });
+
+</script>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+import {
+  getFirestore,
+  Collection,
+  getDocs
+}
+
+from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+/* FIREBASE CONFIG */
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyDFYMS8Uf_8APgKQhZSOko7zUMBgnK8YJE",
+
+  authDomain: "polaris-68e4b.firebaseapp.com",
+
+  projectId: "polaris-68e4b",
+
+  storageBucket: "polaris-68e4b.firebasestorage.app",
+
+  messagingSenderId: "366304330596",
+
+  appId: "1:366304330596:web:0199e45bf1426939277071"
+
+};
+
+/* INIT */
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+console.log("Firestore Connected 🚀")
 
 </script>
 
