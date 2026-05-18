@@ -793,6 +793,10 @@ onAuthStateChanged(auth,(user)=>{
     logoutBtn.style.display =
     "block";
 
+    saveUserData(user);
+    
+    loadLeaderboard();
+
   }else{
 
     userName.innerHTML =
@@ -886,3 +890,55 @@ checkHoaxBtn.addEventListener(
   }
 
 });
+
+/* SAVE USER DATA */
+
+async function saveUserData(user){
+
+  const userRef =
+  doc(db,"users",user.uid);
+
+  await setDoc(userRef,{
+
+    name:user.displayName,
+
+    email:user.email,
+
+    xp:xp,
+
+    level:level
+
+  });
+
+}
+
+/* LOAD LEADERBOARD */
+
+async function loadLeaderboard(){
+
+  const leaderboardList =
+  document.getElementById(
+  "leaderboardList"
+  );
+
+  const querySnapshot =
+  await getDocs(
+    collection(db,"users")
+  );
+
+  leaderboardList.innerHTML = "";
+
+  querySnapshot.forEach((docData)=>{
+
+    const data =
+    docData.data();
+
+    leaderboardList.innerHTML +=
+    `
+    <li>
+      ${data.name} - ⭐ ${data.xp}
+    </li>
+    `;
+
+  });
+}
