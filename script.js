@@ -757,7 +757,7 @@ loginBtn.addEventListener("click", async()=>{
 
   try{
 
-    await signInWithPopup(
+   signInWithPopup(
       auth,
       provider
     );
