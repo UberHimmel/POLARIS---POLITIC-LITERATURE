@@ -807,3 +807,82 @@ onAuthStateChanged(auth,(user)=>{
   }
 
 });
+
+/* HOAX DETECTOR */
+
+const hoaxInput =
+document.getElementById(
+"hoaxInput"
+);
+
+const checkHoaxBtn =
+document.getElementById(
+"checkHoaxBtn"
+);
+
+const hoaxResult =
+document.getElementById(
+"hoaxResult"
+);
+
+checkHoaxBtn.addEventListener(
+"click",
+()=>{
+
+  const text =
+  hoaxInput.value.toLowerCase();
+
+  if(text === ""){
+
+    hoaxResult.innerHTML =
+    "⚠️ Masukkan informasi terlebih dahulu";
+
+    return;
+  }
+
+  /* DETEKSI SEDERHANA */
+
+  if(
+
+    text.includes("sebarkan") ||
+    text.includes("viralkan") ||
+    text.includes("darurat") ||
+    text.includes("pasti benar") ||
+    text.includes("100%")
+
+  ){
+
+    hoaxResult.innerHTML =
+
+    `
+    🚨 <b>Kemungkinan Hoax Tinggi</b>
+
+    <br><br>
+
+    Informasi mengandung ciri manipulatif atau provokatif.
+
+    <br><br>
+
+    ✅ Tips:
+    <br>
+    - cek sumber resmi
+    <br>
+    - cek tanggal berita
+    <br>
+    - bandingkan media lain
+    `;
+
+  }else{
+
+    hoaxResult.innerHTML =
+
+    `
+    ✅ <b>Tidak ditemukan indikasi hoax besar</b>
+
+    <br><br>
+
+    Tapi tetap lakukan verifikasi informasi dari sumber terpercaya.
+    `;
+  }
+
+});
