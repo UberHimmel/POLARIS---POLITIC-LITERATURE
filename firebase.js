@@ -5,6 +5,7 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
   signOut,
   onAuthStateChanged
 }
@@ -54,6 +55,9 @@ window.provider = provider;
 
 window.signInWithPopup =
 signInWithPopup;
+
+window.signInWithRedirect =
+signInWithRedirect;
 
 window.signOut =
 signOut;
