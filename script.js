@@ -739,3 +739,71 @@ startQuizBtn.addEventListener(
   });
 
 });
+
+/* BUTTON */
+
+const loginBtn =
+document.getElementById("loginBtn");
+
+const logoutBtn =
+document.getElementById("logoutBtn");
+
+const userName =
+document.getElementById("userName");
+
+/* LOGIN */
+
+loginBtn.addEventListener("click", async()=>{
+
+  try{
+
+    await signInWithPopup(
+      auth,
+      provider
+    );
+
+  }catch(error){
+
+    alert(error.message);
+
+  }
+
+});
+
+/* LOGOUT */
+
+logoutBtn.addEventListener("click", ()=>{
+
+  signOut(auth);
+
+});
+
+/* USER STATE */
+
+onAuthStateChanged(auth,(user)=>{
+
+  if(user){
+
+    userName.innerHTML =
+    "Halo, " + user.displayName;
+
+    loginBtn.style.display =
+    "none";
+
+    logoutBtn.style.display =
+    "block";
+
+  }else{
+
+    userName.innerHTML =
+    "Belum Login";
+
+    loginBtn.style.display =
+    "block";
+
+    logoutBtn.style.display =
+    "none";
+
+  }
+
+});
