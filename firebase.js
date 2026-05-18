@@ -62,3 +62,13 @@ window.onAuthStateChanged =
 onAuthStateChanged;
 
 console.log("Firebase Connected 🚀");
+
+window.doc = doc;
+
+window.setDoc = setDoc;
+
+window.getDoc = getDoc;
+
+window.collection = collection;
+
+window.getDocs = getDocs;
