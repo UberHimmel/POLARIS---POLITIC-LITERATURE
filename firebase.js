@@ -3,9 +3,8 @@ from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
 
 import {
   getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signInWithRedirect,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged
 }
@@ -42,8 +41,6 @@ const db = getFirestore(app);
 
 const auth = getAuth(app);
 
-const provider =
-new GoogleAuthProvider();
 
 /* GLOBAL */
 
@@ -52,9 +49,6 @@ window.db = db;
 window.auth = auth;
 
 window.provider = provider;
-
-window.signInWithPopup =
-signInWithPopup;
 
 window.signInWithRedirect =
 signInWithRedirect;
@@ -76,3 +70,9 @@ window.getDoc = getDoc;
 window.collection = collection;
 
 window.getDocs = getDocs;
+
+window.createUserWithEmailAndPassword =
+createUserWithEmailAndPassword;
+
+window.signInWithEmailAndPassword =
+signInWithEmailAndPassword;
