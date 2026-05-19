@@ -740,27 +740,85 @@ startQuizBtn.addEventListener(
 
 });
 
-/* BUTTON */
+/* AUTH SYSTEM */
 
 const loginBtn =
-document.getElementById("loginBtn");
+document.getElementById(
+"loginBtn"
+);
+
+const registerBtn =
+document.getElementById(
+"registerBtn"
+);
 
 const logoutBtn =
-document.getElementById("logoutBtn");
+document.getElementById(
+"logoutBtn"
+);
 
 const userName =
-document.getElementById("userName");
+document.getElementById(
+"userName"
+);
 
-/* LOGIN */
+const emailInput =
+document.getElementById(
+"emailInput"
+);
 
-loginBtn.addEventListener("click", async()=>{
+const passwordInput =
+document.getElementById(
+"passwordInput"
+);
+
+/* REGISTER */
+
+registerBtn.addEventListener(
+"click",
+async()=>{
 
   try{
 
-   signInWithPopup(
+    await createUserWithEmailAndPassword(
+
       auth,
-      provider
+
+      emailInput.value,
+
+      passwordInput.value
+
     );
+
+    alert("Akun berhasil dibuat 🚀");
+
+  }catch(error){
+
+    alert(error.message);
+
+  }
+
+});
+
+/* LOGIN */
+
+loginBtn.addEventListener(
+"click",
+async()=>{
+
+  try{
+
+    await signInWithEmailAndPassword(
+
+      auth,
+
+      emailInput.value,
+
+      passwordInput.value
+
+    );
+
+    alert("Login berhasil 🚀");
 
   }catch(error){
 
@@ -772,7 +830,9 @@ loginBtn.addEventListener("click", async()=>{
 
 /* LOGOUT */
 
-logoutBtn.addEventListener("click", ()=>{
+logoutBtn.addEventListener(
+"click",
+()=>{
 
   signOut(auth);
 
@@ -780,30 +840,22 @@ logoutBtn.addEventListener("click", ()=>{
 
 /* USER STATE */
 
-onAuthStateChanged(auth,(user)=>{
+onAuthStateChanged(
+auth,
+(user)=>{
 
   if(user){
 
     userName.innerHTML =
-    "Halo, " + user.displayName;
-
-    loginBtn.style.display =
-    "none";
+    "Halo, " + user.email;
 
     logoutBtn.style.display =
     "block";
-
-    saveUserData(user);
-    
-    loadLeaderboard();
 
   }else{
 
     userName.innerHTML =
     "Belum Login";
-
-    loginBtn.style.display =
-    "block";
 
     logoutBtn.style.display =
     "none";
