@@ -561,7 +561,9 @@ document.querySelectorAll(
 ".answer-btn"
 );
 
-loadQuiz();
+if(question && answerBtns.length > 0){
+  loadQuiz();
+}
 
 function loadQuiz(){
 
