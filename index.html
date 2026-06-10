@@ -54,23 +54,24 @@
           <p>Uji pemahaman wawasan kebangsaan dan sistem politik di sini.</p>
           <button id="startQuizBtn">Mulai Kuis</button>
         </div>
+        
         <div class="card green" id="hoaxSection">
-  <h3>Detector Fitnah & Hoax AI</h3>
-  <p>Salin teks berita atau unggah gambar/tangkapan layar untuk mendeteksi potensi hoax.</p>
-  
-  <textarea id="hoaxInput" placeholder="Tempel narasi berita atau kutipan di sini..."></textarea>
-  
-  <div class="image-upload-wrapper" style="margin-top: 10px;">
-    <label for="hoaxImage" style="cursor:pointer; background:rgba(255,255,255,0.2); padding:8px 12px; border-radius:10px; display:inline-block; font-size:14px;">
-      <i class="fa-solid fa-image"></i> Unggah Gambar
-    </label>
-    <input type="file" id="hoaxImage" accept="image/*" style="display:none;">
-    <span id="fileName" style="font-size:12px; margin-left:10px; opacity:0.8;"></span>
-  </div>
+          <h3>Detector Fitnah & Hoax AI</h3>
+          <p>Salin teks berita atau unggah gambar bukti untuk dianalisis oleh AI.</p>
+          <textarea id="hoaxInput" placeholder="Tempel narasi berita atau kutipan di sini..."></textarea>
+          
+          <div class="image-upload-area" style="margin: 12px 0; display: flex; align-items: center; gap: 10px;">
+            <label for="hoaxImage" style="cursor: pointer; background: rgba(255,255,255,0.15); padding: 10px 15px; border-radius: 12px; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; border: 1px dashed rgba(255,255,255,0.3);">
+              <i class="fa-solid fa-camera"></i> Unggah Gambar
+            </label>
+            <input type="file" id="hoaxImage" accept="image/*" style="display: none;">
+            <span id="fileName" style="font-size: 13px; opacity: 0.8; font-style: italic;">Belum ada gambar</span>
+          </div>
 
-  <button id="checkHoaxBtn">Periksa dengan AI</button>
-  <div id="hoaxResult"></div>
-</div>
+          <button id="checkHoaxBtn">Periksa Keaslian</button>
+          <div id="hoaxResult"></div>
+        </div>
+
         <div class="card orange">
           <h3>Autentikasi Siswa</h3>
           <p>Daftar atau masuk untuk menyimpan progress peringkat XP.</p>
