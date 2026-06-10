@@ -416,7 +416,7 @@ onAuthStateChanged(auth, (user) => {
 
 
 /* =======================================================
-   🔥 REAL DETECTOR HOAX - POWERED BY GEMINI AI (MULTIMODAL)
+   🔥 DETECTOR HOAX MULTIMODAL (TEKS & GAMBAR) + LIVE SOURCE LINK
    ======================================================= */
 const hoaxInput = document.getElementById("hoaxInput");
 const checkHoaxBtn = document.getElementById("checkHoaxBtn");
@@ -424,10 +424,9 @@ const hoaxResult = document.getElementById("hoaxResult");
 const hoaxImageInput = document.getElementById("hoaxImage");
 const fileNameSpan = document.getElementById("fileName");
 
-// Menampilkan nama file gambar yang dipilih ke pengguna
 if (hoaxImageInput && fileNameSpan) {
   hoaxImageInput.addEventListener("change", (e) => {
-    fileNameSpan.innerText = e.target.files[0] ? `📁 ${e.target.files[0].name}` : "";
+    fileNameSpan.innerText = e.target.files[0] ? `📁 ${e.target.files[0].name}` : "Belum ada gambar";
   });
 }
 
@@ -439,18 +438,18 @@ if (checkHoaxBtn) {
     const imageFile = hoaxImageInput ? hoaxImageInput.files[0] : null;
 
     if (textValue === "" && !imageFile) {
-      hoaxResult.innerHTML = "⚠️ Masukkan teks kutipan/berita atau unggah gambar terlebih dahulu!";
+      hoaxResult.innerHTML = "⚠️ Masukkan kutipan teks atau unggah gambar terlebih dahulu!";
       return;
     }
 
-    hoaxResult.innerHTML = "🔍 <span class='typing'>POLARIS AI sedang menganalisis keaslian data...</span>";
+    hoaxResult.innerHTML = "🔍 <span class='typing'>POLARIS AI sedang menganalisis keaslian data & mencari sumber rujukan...</span>";
 
     try {
-      // Menggunakan Gemini API Key milik POLARIS
       const GEMINI_API_KEY = "AIzaSyDFYMS8Uf_8APgKQhZSOko7zUMBgnK8YJE";
       let url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-      let promptInstruction = "Bertindaklah sebagai sistem pemeriksa fakta (Fact-Checker) independen, objektif, cerdas, dan sopan untuk literasi politik Indonesia. Analisis teks dan/atau gambar yang diberikan. Tentukan status validitasnya (FAKTA/HOAX/KUTIPAN PALSU/SATIR). Berikan penjelasan singkat, logis, data pendukung jika ada, serta tips verifikasi. Format output harus rapi menggunakan tag HTML seperti <b>, <br>, atau list. Jangan gunakan markdown bintang-bintang (**).";
+      // Prompt Engineering yang sangat ketat dipaksa menggunakan tag anchor HTML (<a>) asli
+      let promptInstruction = "Bertindaklah sebagai sistem pemeriksa fakta (Fact-Checker) independen untuk politik Indonesia. Analisis teks/gambar berikut secara mendalam. Tentukan validitasnya (FAKTA / HOAX / KUTIPAN PALSU). Berikan argumen rasional. WAJIB sertakan minimal 1 link referensi asli atau rujukan situs resmi (misal: turnbackhoax.id, kominfo.go.id, atau cekfakta.com) yang relevan dengan topik. Format link wajib menggunakan tag HTML murni seperti ini: <a href='https://situs.com' target='_blank' style='color:#A78BFA; text-decoration:underline;'>Nama Situs</a>. Jangan gunakan format markdown. Seluruh output harus menggunakan variasi tag HTML paragraf (<p>) dan pemisah baris (<br>).";
 
       let contentsPayload = [];
 
@@ -458,7 +457,7 @@ if (checkHoaxBtn) {
         const base64Data = await convertToBase64(imageFile);
         contentsPayload = [{
           parts: [
-            { text: `${promptInstruction} \nTeks/Konteks tambahan: "${textValue}"` },
+            { text: `${promptInstruction}\nTeks/Konteks tambahan dari user: "${textValue}"` },
             {
               inlineData: {
                 mimeType: imageFile.type,
@@ -469,7 +468,7 @@ if (checkHoaxBtn) {
         }];
       } else {
         contentsPayload = [{
-          parts: [{ text: `${promptInstruction} \nTeks yang harus dianalisis: "${textValue}"` }]
+          parts: [{ text: `${promptInstruction}\nTeks klaim berita: "${textValue}"` }]
         }];
       }
 
@@ -484,27 +483,26 @@ if (checkHoaxBtn) {
       if (resultData.candidates && resultData.candidates[0].content.parts[0].text) {
         let aiOutput = resultData.candidates[0].content.parts[0].text;
         
-        // Membersihkan jika AI tidak sengaja memuntahkan format markdown bintang ke HTML
+        // Membersihkan konversi paksa tanda bintang tebal markdown jika AI melakukan kesalahan output
         aiOutput = aiOutput.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
 
         hoaxResult.innerHTML = `
-          <div style="border-left: 4px solid #00B894; padding-left: 12px; line-height: 1.6;">
-            📊 <b>Analisis Cerdas POLARIS AI:</b><br><br>
+          <div style="border-left: 4px solid #00B894; padding-left: 12px; line-height: 1.6; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px;">
+            📊 <b>Hasil Verifikasi Real-time POLARIS AI:</b><br><br>
             ${aiOutput}
           </div>
         `;
       } else {
-        hoaxResult.innerHTML = "❌ AI kesulitan menganalisis data ini. Silakan coba deskripsikan dengan kalimat berbeda.";
+        hoaxResult.innerHTML = "❌ Format data ditolak. Tulis deskripsi klaim berita secara lebih mendetail.";
       }
 
     } catch (error) {
       console.error(error);
-      hoaxResult.innerHTML = "❌ Gagal terhubung ke pusat data verifikasi AI. Periksa jaringan Anda.";
+      hoaxResult.innerHTML = "❌ Terjadi gangguan server enkripsi saat memeriksa data. Coba beberapa saat lagi.";
     }
   });
 }
 
-// Fungsi pembantu membaca file gambar menjadi string base64 untuk dikirim ke Gemini API
 function convertToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
