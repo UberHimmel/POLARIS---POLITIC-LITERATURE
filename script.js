@@ -20,998 +20,465 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 /* MENU */
+const menuBtn = document.querySelector(".menu-btn");
+const sidebar = document.querySelector(".sidebar");
 
-const menuBtn =
-document.querySelector(".menu-btn");
-
-const sidebar =
-document.querySelector(".sidebar");
-
-menuBtn.addEventListener("click", ()=>{
-
-  sidebar.classList.toggle("active");
-
-});
-
-/* TYPING EFFECT */
-
-const text =
-"Platform Literasi Politik untuk Generasi Melek, Kritis, dan Berpartisipasi";
-
-const typingText =
-document.getElementById("typing-text");
-
-let index = 0;
-
-function typeEffect(){
-
-  if(index < text.length){
-
-    typingText.innerHTML +=
-    text.charAt(index);
-
-    index++;
-
-    setTimeout(typeEffect,40);
-
-  }
-
+if (menuBtn && sidebar) {
+  menuBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("active");
+  });
 }
 
+/* TYPING EFFECT */
+const text = "Platform Literasi Politik untuk Generasi Melek, Kritis, dan Berpartisipasi";
+const typingText = document.getElementById("typing-text");
+let index = 0;
+
+function typeEffect() {
+  if (typingText && index < text.length) {
+    typingText.innerHTML += text.charAt(index);
+    index++;
+    setTimeout(typeEffect, 40);
+  }
+}
 typeEffect();
 
 /* LOADER */
-
-const loader =
-document.querySelector(".loader");
-
-window.addEventListener("load", ()=>{
-
-  setTimeout(()=>{
-
-    loader.classList.add("hide");
-
-  },1500);
-
+const loader = document.querySelector(".loader");
+window.addEventListener("load", () => {
+  if (loader) {
+    setTimeout(() => {
+      loader.classList.add("hide");
+    }, 1500);
+  }
 });
 
 /* AI POPUP */
+const aiPopup = document.getElementById("aiPopup");
+const closeAI = document.getElementById("closeAI");
+const openChat = document.getElementById("openChat");
 
-const aiPopup =
-document.getElementById("aiPopup");
+if (closeAI && aiPopup && openChat) {
+  closeAI.addEventListener("click", () => {
+    aiPopup.style.display = "none";
+    openChat.style.display = "block";
+  });
+}
 
-const closeAI =
-document.getElementById("closeAI");
-
-const openChat =
-document.getElementById("openChat");
-
-closeAI.addEventListener("click", ()=>{
-
-  aiPopup.style.display = "none";
-
-  openChat.style.display = "block";
-
-});
-
-openChat.addEventListener("click", ()=>{
-
-  aiPopup.style.display = "flex";
-
-  openChat.style.display = "none";
-
-});
+if (openChat && aiPopup) {
+  openChat.addEventListener("click", () => {
+    aiPopup.style.display = "flex";
+    openChat.style.display = "none";
+  });
+}
 
 /* AI CHAT */
+const sendAI = document.getElementById("sendAI");
+const aiInput = document.getElementById("aiInput");
+const aiBody = document.getElementById("aiBody");
 
-const sendAI =
-document.getElementById("sendAI");
+if (sendAI) {
+  sendAI.addEventListener("click", sendMessage);
+}
 
-const aiInput =
-document.getElementById("aiInput");
+if (aiInput) {
+  aiInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      sendMessage();
+    }
+  });
+}
 
-const aiBody =
-document.getElementById("aiBody");
-
-/* SEND BUTTON */
-
-sendAI.addEventListener(
-"click",
-sendMessage
-);
-
-/* ENTER KEY */
-
-aiInput.addEventListener(
-"keypress",
-(e)=>{
-
-  if(e.key === "Enter"){
-
-    sendMessage();
-
-  }
-
-});
-
-function sendMessage(){
-
-  const text =
-  aiInput.value.trim();
-
-  if(text === "") return;
+function sendMessage() {
+  if (!aiInput || !aiBody) return;
+  const text = aiInput.value.trim();
+  if (text === "") return;
 
   /* USER MESSAGE */
-
-  const userMsg =
-  document.createElement("div");
-
-  userMsg.classList.add(
-  "user-message"
-  );
-
+  const userMsg = document.createElement("div");
+  userMsg.classList.add("user-message");
   userMsg.innerText = text;
-
   aiBody.appendChild(userMsg);
   
   saveChat();
-
   aiInput.value = "";
-
-  aiBody.scrollTop =
-  aiBody.scrollHeight;
+  aiBody.scrollTop = aiBody.scrollHeight;
 
   /* TYPING EFFECT */
-
-  const typing =
-  document.createElement("div");
-
-  typing.classList.add(
-  "ai-message",
-  "typing"
-  );
-
-  typing.innerText =
-  "POLARIS AI sedang mengetik...";
-
+  const typing = document.createElement("div");
+  typing.classList.add("ai-message", "typing");
+  typing.innerText = "POLARIS AI sedang mengetik...";
   aiBody.appendChild(typing);
+  aiBody.scrollTop = aiBody.scrollHeight;
 
-  aiBody.scrollTop =
-  aiBody.scrollHeight;
-
-  setTimeout(()=>{
-
+  setTimeout(() => {
     typing.remove();
 
     /* BOT MESSAGE */
-
-    const botMsg =
-    document.createElement("div");
-
-    botMsg.classList.add(
-    "ai-message"
-    );
-
-    typeBotMessage(
-botMsg,
-getAIResponse(text)
-);
-
+    const botMsg = document.createElement("div");
+    botMsg.classList.add("ai-message");
+    typeBotMessage(botMsg, getAIResponse(text));
     aiBody.appendChild(botMsg);
-
-    aiBody.scrollTop =
-    aiBody.scrollHeight;
+    aiBody.scrollTop = aiBody.scrollHeight;
     
     saveChat();
-
-  },1200);
-
+  }, 1200);
 }
 
 /* AI RESPONSE */
+function getAIResponse(message) {
+  message = message.toLowerCase();
 
-function getAIResponse(message){
-
-  message =
-  message.toLowerCase();
-
-  /* SAPAAN */
-
-  if(
-    message.includes("halo") ||
-    message.includes("hai") ||
-    message.includes("hi")
-  ){
-
+  if (message.includes("halo") || message.includes("hai") || message.includes("hi")) {
     return "Halo Polarisian! 🚀 Ada topik politik atau demokrasi yang ingin kamu bahas?";
   }
-
-  /* POLITIK */
-
-  if(
-    message.includes("politik")
-  ){
-
+  if (message.includes("politik")) {
     return "Politik adalah proses pengambilan keputusan dalam masyarakat dan negara 🌍";
   }
-
-  /* DEMOKRASI */
-
-  if(
-    message.includes("demokrasi")
-  ){
-
+  if (message.includes("demokrasi")) {
     return "Demokrasi adalah sistem dimana rakyat memiliki hak memilih dan menyampaikan pendapat 👥";
   }
-
-  /* PEMILU */
-
-  if(
-    message.includes("pemilu")
-  ){
-
+  if (message.includes("pemilu")) {
     return "Pemilu adalah sarana demokrasi untuk memilih pemimpin dan wakil rakyat 🗳️";
   }
-
-  /* HOAX */
-
-  if(
-    message.includes("hoax")
-  ){
-
+  if (message.includes("hoax")) {
     return "Hoax biasanya memakai judul emosional dan provokatif. Selalu cek fakta sebelum menyebarkan informasi 🔍";
   }
-
-  /* KORUPSI */
-
-  if(
-    message.includes("korupsi")
-  ){
-
+  if (message.includes("korupsi")) {
     return "Korupsi adalah penyalahgunaan kekuasaan demi keuntungan pribadi dan dapat merugikan masyarakat ⚖️";
   }
-
-  /* HAM */
-
-  if(
-    message.includes("ham")
-  ){
-
+  if (message.includes("ham")) {
     return "HAM adalah Hak Asasi Manusia, yaitu hak dasar yang dimiliki setiap manusia sejak lahir ✨";
   }
-
-  /* DPR */
-
-  if(
-    message.includes("dpr")
-  ){
-
+  if (message.includes("dpr")) {
     return "DPR adalah lembaga legislatif yang memiliki fungsi membuat undang-undang dan mengawasi pemerintah 🏛️";
   }
-
-  /* PRESIDEN */
-
-  if(
-    message.includes("presiden")
-  ){
-
+  if (message.includes("presiden")) {
     return "Presiden adalah kepala negara sekaligus kepala pemerintahan di Indonesia 🇮🇩";
   }
-
-  /* ANAK MUDA */
-
-  if(
-    message.includes("anak muda") ||
-    message.includes("generasi muda")
-  ){
-
+  if (message.includes("anak muda") || message.includes("generasi muda")) {
     return "Generasi muda punya peran besar dalam menjaga demokrasi dan melawan penyebaran hoax 🚀";
   }
-
-  /* TERIMA KASIH */
-
-  if(
-    message.includes("terima kasih") ||
-    message.includes("makasih")
-  ){
-
+  if (message.includes("terima kasih") || message.includes("makasih")) {
     return "Sama-sama Polarisian! 🚀";
   }
-
-  /* DEFAULT */
 
   return "Aku POLARIS AI 🚀 Saat ini aku masih belajar memahami pertanyaan politik yang lebih kompleks.";
 }
 
 /* BOT TYPING EFFECT */
-
-function typeBotMessage(
-element,
-text
-){
-
+function typeBotMessage(element, text) {
   let i = 0;
-
-  function typing(){
-
-    if(i < text.length){
-
-      element.innerHTML +=
-      text.charAt(i);
-
+  function typing() {
+    if (element && aiBody && i < text.length) {
+      element.innerHTML += text.charAt(i);
       i++;
-
-      aiBody.scrollTop =
-      aiBody.scrollHeight;
-
-      setTimeout(
-        typing,
-        20
-      );
-
+      aiBody.scrollTop = aiBody.scrollHeight;
+      setTimeout(typing, 20);
     }
-
   }
-
   typing();
-
 }
 
 /* SAVE CHAT */
-
-function saveChat(){
-
-  localStorage.setItem(
-    "polarisChat",
-    aiBody.innerHTML
-  );
-
+function saveChat() {
+  if (aiBody) {
+    localStorage.setItem("polarisChat", aiBody.innerHTML);
+  }
 }
 
 /* LOAD CHAT */
-
-window.addEventListener("load", ()=>{
-
-  const savedChat =
-  localStorage.getItem(
-    "polarisChat"
-  );
-
-  if(savedChat){
-
-    aiBody.innerHTML =
-    savedChat;
-
+window.addEventListener("load", () => {
+  const savedChat = localStorage.getItem("polarisChat");
+  if (savedChat && aiBody) {
+    aiBody.innerHTML = savedChat;
   }
-
 });
 
 /* XP SYSTEM */
-
 let xp = 0;
-
 let level = 1;
 
-const xpPoints =
-document.getElementById(
-"xpPoints"
-);
-
-const userLevel =
-document.getElementById(
-"userLevel"
-);
-
-const xpFill =
-document.getElementById(
-"xpFill"
-);
+const xpPoints = document.getElementById("xpPoints");
+const userLevel = document.getElementById("userLevel");
+const xpFill = document.getElementById("xpFill");
 
 /* LOAD XP */
+const savedXP = localStorage.getItem("polarisXP");
+const savedLevel = localStorage.getItem("polarisLevel");
 
-const savedXP =
-localStorage.getItem(
-"polarisXP"
-);
-
-const savedLevel =
-localStorage.getItem(
-"polarisLevel"
-);
-
-if(savedXP){
-
-  xp = parseInt(savedXP);
-
-}
-
-if(savedLevel){
-
-  level = parseInt(savedLevel);
-
-}
+if (savedXP) xp = parseInt(savedXP);
+if (savedLevel) level = parseInt(savedLevel);
 
 updateXP();
 
 /* ADD XP */
-
-function addXP(amount){
-
+function addXP(amount) {
   xp += amount;
-
-  /* LEVEL UP */
-
-  if(xp >= 100){
-
+  if (xp >= 100) {
     xp = 0;
-
     level++;
-
-    showToast(
-      "🚀 Level Naik ke Level "
-      + level
-    );
-
+    showToast("🚀 Level Naik ke Level " + level);
   }
-
   updateXP();
-
-  localStorage.setItem(
-    "polarisXP",
-    xp
-  );
-
-  localStorage.setItem(
-    "polarisLevel",
-    level
-  );
-
+  localStorage.setItem("polarisXP", xp);
+  localStorage.setItem("polarisLevel", level);
 }
 
 /* UPDATE UI */
-
-function updateXP(){
-
-  xpPoints.innerHTML =
-  "⭐ " + xp;
-
-  userLevel.innerHTML =
-  "Level " + level;
-
-  xpFill.style.width =
-  xp + "%";
-
+function updateXP() {
+  if (xpPoints) xpPoints.innerHTML = "⭐ " + xp;
+  if (userLevel) userLevel.innerHTML = "Level " + level;
+  if (xpFill) xpFill.style.width = xp + "%";
 }
 
-const cursorGlow =
-document.querySelector(".cursor-glow");
-
-document.addEventListener("mousemove",(e)=>{
-
-  if(cursorGlow){
-
-    cursorGlow.style.left =
-    e.clientX + "px";
-
-    cursorGlow.style.top =
-    e.clientY + "px";
-
+/* CURSOR GLOW */
+const cursorGlow = document.querySelector(".cursor-glow");
+document.addEventListener("mousemove", (e) => {
+  if (cursorGlow) {
+    cursorGlow.style.left = e.clientX + "px";
+    cursorGlow.style.top = e.clientY + "px";
   }
-
 });
 
-function tambahXP(){
-
-  xp += 10;
-
-  if(xp > 100){
-    xp = 100;
-  }
-
-  document.querySelector(".xp-fill")
-  .style.width = xp + "%";
-
-}
-
+/* QUIZ DATA LOCAL (Fallback/HOTS) */
 const quizData = [
-
   {
-
-    question:
-    "Mengapa literasi politik penting bagi generasi muda?",
-
-    answers:[
+    question: "Mengapa literasi politik penting bagi generasi muda?",
+    answers: [
       "Agar mudah mengikuti tren",
       "Agar memahami hak dan kewajiban sebagai warga negara",
       "Supaya terkenal di media sosial",
       "Agar bisa berdebat tanpa data"
     ],
-
-    correct:1
-
+    correct: 1
   },
-
   {
-
-    question:
-    "Apa dampak hoax politik terhadap demokrasi?",
-
-    answers:[
+    question: "Apa dampak hoax politik terhadap demokrasi?",
+    answers: [
       "Meningkatkan kualitas informasi",
       "Membantu masyarakat berpikir kritis",
       "Menyebabkan polarisasi dan kesalahpahaman",
       "Mempercepat pembangunan"
     ],
-
-    correct:2
-
+    correct: 2
   }
-
 ];
 
 let currentQuiz = 0;
+const question = document.getElementById("question");
+const answerBtns = document.querySelectorAll(".answer-btn");
 
-const question =
-document.getElementById(
-"question"
-);
-
-const answerBtns =
-document.querySelectorAll(
-".answer-btn"
-);
-
-if(question && answerBtns.length > 0){
+if (question && answerBtns.length > 0) {
   loadQuiz();
 }
 
-function loadQuiz(){
-
-  const current =
-  quizData[currentQuiz];
-
-  question.innerText =
-  current.question;
-
-  answerBtns.forEach(
-  (btn,index)=>{
-
-    btn.innerText =
-    current.answers[index];
-
+function loadQuiz() {
+  if (!question) return;
+  const current = quizData[currentQuiz];
+  question.innerText = current.question;
+  answerBtns.forEach((btn, index) => {
+    btn.innerText = current.answers[index];
   });
-
 }
 
-/* ANSWER */
-
-answerBtns.forEach(
-(btn,index)=>{
-
-  btn.addEventListener(
-  "click",
-  ()=>{
-
-    const correct =
-    quizData[currentQuiz].correct;
-
-    if(index === correct){
-
-      showToast(
-      "✅ Jawaban Benar! +25 XP"
-      );
-
+/* ANSWER LOGIC */
+answerBtns.forEach((btn, index) => {
+  btn.addEventListener("click", () => {
+    const correct = quizData[currentQuiz].correct;
+    if (index === correct) {
+      showToast("✅ Jawaban Benar! +25 XP");
       addXP(25);
-
-    }else{
-
-      showToast(
-      "❌ Jawaban Kurang Tepat"
-      );
-
+    } else {
+      showToast("❌ Jawaban Kurang Tepat");
     }
 
     currentQuiz++;
-
-    if(
-      currentQuiz <
-      quizData.length
-    ){
-
+    if (currentQuiz < quizData.length) {
       loadQuiz();
-
-    }else{
-
-      question.innerText =
-      "🎉 Quiz Selesai!";
-
-      document.querySelector(
-      ".answers"
-      ).style.display =
-      "none";
-
+    } else {
+      question.innerText = "🎉 Quiz Selesai!";
+      const answersDiv = document.querySelector(".answers");
+      if (answersDiv) answersDiv.style.display = "none";
     }
-
   });
-
 });
 
 /* TOAST FUNCTION */
-
-function showToast(message){
-
-  const toast =
-  document.querySelector(".toast");
-
-  toast.innerText = message;
-
-  toast.classList.add("show");
-
-  setTimeout(()=>{
-
-    toast.classList.remove("show");
-
-  },3000);
-
+function showToast(message) {
+  const toast = document.querySelector(".toast");
+  if (toast) {
+    toast.innerText = message;
+    toast.classList.add("show");
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 3000);
+  }
 }
 
-/* GNEWS API */
+/* =======================================================
+   💥 POSISI SINKRON: GNEWS API FUNCTION LOADNEWS
+   ======================================================= */
+const API_KEY = "18e89427a04c6b5440a483b5b6fbe0dc";
+const articleList = document.querySelector(".article-list");
 
-const API_KEY =
-"18e89427a04c6b5440a483b5b6fbe0dc";
-
-const articleList =
-document.querySelector(".article-list");
-
-async function loadNews(){
-
-  try{
-
-    const response =
-    await fetch(
+async function loadNews() {
+  if (!articleList) return;
+  try {
+    const response = await fetch(
       `https://gnews.io/api/v4/top-headlines?category=general&lang=id&country=id&max=3&apikey=${API_KEY}`
     );
-
-    const data =
-    await response.json();
-
+    const data = await response.json();
     console.log(data);
-
     articleList.innerHTML = "";
 
-    if(!data.articles){
-
-      articleList.innerHTML =
-      "<p>Berita gagal dimuat 😢</p>";
-
+    if (!data.articles) {
+      articleList.innerHTML = "<p>Berita gagal dimuat 😢</p>";
       return;
     }
 
-    data.articles.forEach(article=>{
-
+    data.articles.forEach(article => {
       articleList.innerHTML += `
-
       <div class="article-card">
-
-        <img
-        src="${article.image || 'https://via.placeholder.com/300x180'}"
-
-        style="
-        width:100%;
-        height:180px;
-        object-fit:cover;
-        border-radius:15px;
-        margin-bottom:15px;
-        ">
-
+        <img src="${article.image || 'https://via.placeholder.com/300x180'}"
+        style="width:100%; height:180px; object-fit:cover; border-radius:15px; margin-bottom:15px;">
         <h3>${article.title}</h3>
-
-        <p>
-          ${article.description || "Tidak ada deskripsi"}
-        </p>
-
-        <a href="${article.url}"
-        target="_blank">
-
-        Baca Selengkapnya →
-
-        </a>
-
+        <p>${article.description || "Tidak ada deskripsi"}</p>
+        <a href="${article.url}" target="_blank">Baca Selengkapnya →</a>
       </div>
-
       `;
-
     });
 
-  }catch(error){
-
+  } catch (error) {
     console.log(error);
-
-    articleList.innerHTML =
-    "<p>Gagal memuat berita 😢</p>";
-
+    articleList.innerHTML = "<p>Gagal memuat berita. Silakan periksa koneksi internet Anda atau coba lagi nanti. 😢</p>";
   }
-
 }
-
 loadNews();
 
 /* OPEN QUIZ PAGE */
+const startQuizBtn = document.getElementById("startQuizBtn");
+const quizPage = document.getElementById("quizPage");
 
-const startQuizBtn =
-document.getElementById(
-"startQuizBtn"
-);
-
-const quizPage =
-document.getElementById(
-"quizPage"
-);
-
-startQuizBtn.addEventListener(
-"click",
-()=>{
-
-  quizPage.style.display =
-  "block";
-
-  quizPage.scrollIntoView({
-    behavior:"smooth"
+if (startQuizBtn && quizPage) {
+  startQuizBtn.addEventListener("click", () => {
+    quizPage.style.display = "block";
+    quizPage.scrollIntoView({ behavior: "smooth" });
   });
-
-});
+}
 
 /* AUTH SYSTEM */
+const loginBtn = document.getElementById("loginBtn");
+const registerBtn = document.getElementById("registerBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const userName = document.getElementById("userName");
+const emailInput = document.getElementById("emailInput");
+const passwordInput = document.getElementById("passwordInput");
 
-const loginBtn =
-document.getElementById(
-"loginBtn"
-);
+if (registerBtn) {
+  registerBtn.addEventListener("click", async () => {
+    if (!emailInput || !passwordInput) return;
+    try {
+      await createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+      alert("Akun berhasil dibuat 🚀");
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+}
 
-const registerBtn =
-document.getElementById(
-"registerBtn"
-);
+if (loginBtn) {
+  loginBtn.addEventListener("click", async () => {
+    if (!emailInput || !passwordInput) return;
+    try {
+      await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+      alert("Login berhasil 🚀");
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+}
 
-const logoutBtn =
-document.getElementById(
-"logoutBtn"
-);
-
-const userName =
-document.getElementById(
-"userName"
-);
-
-const emailInput =
-document.getElementById(
-"emailInput"
-);
-
-const passwordInput =
-document.getElementById(
-"passwordInput"
-);
-
-/* REGISTER */
-
-registerBtn.addEventListener(
-"click",
-async()=>{
-
-  try{
-
-    await createUserWithEmailAndPassword(
-
-      auth,
-
-      emailInput.value,
-
-      passwordInput.value
-
-    );
-
-    alert("Akun berhasil dibuat 🚀");
-
-  }catch(error){
-
-    alert(error.message);
-
-  }
-
-});
-
-/* LOGIN */
-
-loginBtn.addEventListener(
-"click",
-async()=>{
-
-  try{
-
-    await signInWithEmailAndPassword(
-
-      auth,
-
-      emailInput.value,
-
-      passwordInput.value
-
-    );
-
-    alert("Login berhasil 🚀");
-
-  }catch(error){
-
-    alert(error.message);
-
-  }
-
-});
-
-/* LOGOUT */
-
-logoutBtn.addEventListener(
-"click",
-()=>{
-
-  signOut(auth);
-
-});
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    signOut(auth);
+  });
+}
 
 /* USER STATE */
-
-onAuthStateChanged(
-auth,
-(user)=>{
-
-  if(user){
-
-    userName.innerHTML =
-    "Halo, " + user.email;
-
-    logoutBtn.style.display =
-    "block";
-
-  }else{
-
-    userName.innerHTML =
-    "Belum Login";
-
-    logoutBtn.style.display =
-    "none";
-
+onAuthStateChanged(auth, (user) => {
+  if (!userName || !logoutBtn) return;
+  if (user) {
+    userName.innerHTML = "Halo, " + user.email;
+    logoutBtn.style.display = "block";
+  } else {
+    userName.innerHTML = "Belum Login";
+    logoutBtn.style.display = "none";
   }
-
 });
 
 /* HOAX DETECTOR */
+const hoaxInput = document.getElementById("hoaxInput");
+const checkHoaxBtn = document.getElementById("checkHoaxBtn");
+const hoaxResult = document.getElementById("hoaxResult");
 
-const hoaxInput =
-document.getElementById(
-"hoaxInput"
-);
+if (checkHoaxBtn) {
+  checkHoaxBtn.addEventListener("click", () => {
+    if (!hoaxInput || !hoaxResult) return;
+    const text = hoaxInput.value.toLowerCase();
 
-const checkHoaxBtn =
-document.getElementById(
-"checkHoaxBtn"
-);
+    if (text === "") {
+      hoaxResult.innerHTML = "⚠️ Masukkan informasi terlebih dahulu";
+      return;
+    }
 
-const hoaxResult =
-document.getElementById(
-"hoaxResult"
-);
-
-checkHoaxBtn.addEventListener(
-"click",
-()=>{
-
-  const text =
-  hoaxInput.value.toLowerCase();
-
-  if(text === ""){
-
-    hoaxResult.innerHTML =
-    "⚠️ Masukkan informasi terlebih dahulu";
-
-    return;
-  }
-
-  /* DETEKSI SEDERHANA */
-
-  if(
-
-    text.includes("sebarkan") ||
-    text.includes("viralkan") ||
-    text.includes("darurat") ||
-    text.includes("pasti benar") ||
-    text.includes("100%")
-
-  ){
-
-    hoaxResult.innerHTML =
-
-    `
-    🚨 <b>Kemungkinan Hoax Tinggi</b>
-
-    <br><br>
-
-    Informasi mengandung ciri manipulatif atau provokatif.
-
-    <br><br>
-
-    ✅ Tips:
-    <br>
-    - cek sumber resmi
-    <br>
-    - cek tanggal berita
-    <br>
-    - bandingkan media lain
-    `;
-
-  }else{
-
-    hoaxResult.innerHTML =
-
-    `
-    ✅ <b>Tidak ditemukan indikasi hoax besar</b>
-
-    <br><br>
-
-    Tapi tetap lakukan verifikasi informasi dari sumber terpercaya.
-    `;
-  }
-
-});
+    if (text.includes("sebarkan") || text.includes("viralkan") || text.includes("darurat") || text.includes("pasti benar") || text.includes("100%")) {
+      hoaxResult.innerHTML = `
+      🚨 <b>Kemungkinan Hoax Tinggi</b><br><br>
+      Informasi mengandung ciri manipulatif atau provokatif.<br><br>
+      ✅ Tips:<br>
+      - cek sumber resmi<br>
+      - cek tanggal berita<br>
+      - bandingkan media lain
+      `;
+    } else {
+      hoaxResult.innerHTML = `
+      ✅ <b>Tidak ditemukan indikasi hoax besar</b><br><br>
+      Tapi tetap lakukan verifikasi informasi dari sumber terpercaya.
+      `;
+    }
+  });
+}
 
 /* SAVE USER DATA */
-
-async function saveUserData(user){
-
-  const userRef =
-  doc(db,"users",user.uid);
-
-  await setDoc(userRef,{
-
-    name:user.displayName,
-
-    email:user.email,
-
-    xp:xp,
-
-    level:level
-
-  });
-
+async function saveUserData(user) {
+  try {
+    const userRef = doc(db, "users", user.uid);
+    await setDoc(userRef, {
+      name: user.displayName || user.email.split('@')[0],
+      email: user.email,
+      xp: xp,
+      level: level
+    });
+  } catch (e) {
+    console.error("Gagal simpan data user: ", e);
+  }
 }
 
 /* LOAD LEADERBOARD */
-
-async function loadLeaderboard(){
-
-  const leaderboardList =
-  document.getElementById(
-  "leaderboardList"
-  );
-
-  const querySnapshot =
-  await getDocs(
-    collection(db,"users")
-  );
-
-  leaderboardList.innerHTML = "";
-
-  querySnapshot.forEach((docData)=>{
-
-    const data =
-    docData.data();
-
-    leaderboardList.innerHTML +=
-    `
-    <li>
-      ${data.name} - ⭐ ${data.xp}
-    </li>
-    `;
-
-  });
+async function loadLeaderboard() {
+  const leaderboardList = document.getElementById("leaderboardList");
+  if (!leaderboardList) return;
+  try {
+    const querySnapshot = await getDocs(collection(db, "users"));
+    leaderboardList.innerHTML = "";
+    querySnapshot.forEach((docData) => {
+      const data = docData.data();
+      leaderboardList.innerHTML += `
+      <li>${data.name || data.email} - ⭐ ${data.xp}</li>
+      `;
+    });
+  } catch (e) {
+    console.error("Gagal memuat leaderboard: ", e);
+  }
 }
