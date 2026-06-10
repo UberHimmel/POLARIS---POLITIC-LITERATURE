@@ -15,6 +15,7 @@ import {
   getDocs 
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
+// Konfigurasi Resmi Web App Firebase POLARIS
 const firebaseConfig = {
   apiKey: "AIzaSyDFYMS8Uf_8APgKQhZSOko7zUMBgnK8YJE",
   authDomain: "polaris-68e4b.firebaseapp.com",
