@@ -241,7 +241,7 @@ document.addEventListener("mousemove", (e) => {
   }
 });
 
-/* QUIZ DATA LOCAL (Fallback/HOTS) */
+/* QUIZ DATA LOCAL */
 const quizData = [
   {
     question: "Mengapa literasi politik penting bagi generasi muda?",
@@ -316,9 +316,7 @@ function showToast(message) {
   }
 }
 
-/* =======================================================
-   💥 POSISI SINKRON: GNEWS API FUNCTION LOADNEWS
-   ======================================================= */
+/* GNEWS API */
 const API_KEY = "18e89427a04c6b5440a483b5b6fbe0dc";
 const articleList = document.querySelector(".article-list");
 
@@ -329,7 +327,6 @@ async function loadNews() {
       `https://gnews.io/api/v4/top-headlines?category=general&lang=id&country=id&max=3&apikey=${API_KEY}`
     );
     const data = await response.json();
-    console.log(data);
     articleList.innerHTML = "";
 
     if (!data.articles) {
@@ -417,40 +414,108 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-/* HOAX DETECTOR */
+
+/* =======================================================
+   🔥 REAL DETECTOR HOAX - POWERED BY GEMINI AI (MULTIMODAL)
+   ======================================================= */
 const hoaxInput = document.getElementById("hoaxInput");
 const checkHoaxBtn = document.getElementById("checkHoaxBtn");
 const hoaxResult = document.getElementById("hoaxResult");
+const hoaxImageInput = document.getElementById("hoaxImage");
+const fileNameSpan = document.getElementById("fileName");
+
+// Menampilkan nama file gambar yang dipilih ke pengguna
+if (hoaxImageInput && fileNameSpan) {
+  hoaxImageInput.addEventListener("change", (e) => {
+    fileNameSpan.innerText = e.target.files[0] ? `📁 ${e.target.files[0].name}` : "";
+  });
+}
 
 if (checkHoaxBtn) {
-  checkHoaxBtn.addEventListener("click", () => {
+  checkHoaxBtn.addEventListener("click", async () => {
     if (!hoaxInput || !hoaxResult) return;
-    const text = hoaxInput.value.toLowerCase();
+    
+    const textValue = hoaxInput.value.trim();
+    const imageFile = hoaxImageInput ? hoaxImageInput.files[0] : null;
 
-    if (text === "") {
-      hoaxResult.innerHTML = "⚠️ Masukkan informasi terlebih dahulu";
+    if (textValue === "" && !imageFile) {
+      hoaxResult.innerHTML = "⚠️ Masukkan teks kutipan/berita atau unggah gambar terlebih dahulu!";
       return;
     }
 
-    if (text.includes("sebarkan") || text.includes("viralkan") || text.includes("darurat") || text.includes("pasti benar") || text.includes("100%")) {
-      hoaxResult.innerHTML = `
-      🚨 <b>Kemungkinan Hoax Tinggi</b><br><br>
-      Informasi mengandung ciri manipulatif atau provokatif.<br><br>
-      ✅ Tips:<br>
-      - cek sumber resmi<br>
-      - cek tanggal berita<br>
-      - bandingkan media lain
-      `;
-    } else {
-      hoaxResult.innerHTML = `
-      ✅ <b>Tidak ditemukan indikasi hoax besar</b><br><br>
-      Tapi tetap lakukan verifikasi informasi dari sumber terpercaya.
-      `;
+    hoaxResult.innerHTML = "🔍 <span class='typing'>POLARIS AI sedang menganalisis keaslian data...</span>";
+
+    try {
+      // Menggunakan Gemini API Key milik POLARIS
+      const GEMINI_API_KEY = "AIzaSyDFYMS8Uf_8APgKQhZSOko7zUMBgnK8YJE";
+      let url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+      let promptInstruction = "Bertindaklah sebagai sistem pemeriksa fakta (Fact-Checker) independen, objektif, cerdas, dan sopan untuk literasi politik Indonesia. Analisis teks dan/atau gambar yang diberikan. Tentukan status validitasnya (FAKTA/HOAX/KUTIPAN PALSU/SATIR). Berikan penjelasan singkat, logis, data pendukung jika ada, serta tips verifikasi. Format output harus rapi menggunakan tag HTML seperti <b>, <br>, atau list. Jangan gunakan markdown bintang-bintang (**).";
+
+      let contentsPayload = [];
+
+      if (imageFile) {
+        const base64Data = await convertToBase64(imageFile);
+        contentsPayload = [{
+          parts: [
+            { text: `${promptInstruction} \nTeks/Konteks tambahan: "${textValue}"` },
+            {
+              inlineData: {
+                mimeType: imageFile.type,
+                data: base64Data
+              }
+            }
+          ]
+        }];
+      } else {
+        contentsPayload = [{
+          parts: [{ text: `${promptInstruction} \nTeks yang harus dianalisis: "${textValue}"` }]
+        }];
+      }
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contents: contentsPayload })
+      });
+
+      const resultData = await response.json();
+      
+      if (resultData.candidates && resultData.candidates[0].content.parts[0].text) {
+        let aiOutput = resultData.candidates[0].content.parts[0].text;
+        
+        // Membersihkan jika AI tidak sengaja memuntahkan format markdown bintang ke HTML
+        aiOutput = aiOutput.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+
+        hoaxResult.innerHTML = `
+          <div style="border-left: 4px solid #00B894; padding-left: 12px; line-height: 1.6;">
+            📊 <b>Analisis Cerdas POLARIS AI:</b><br><br>
+            ${aiOutput}
+          </div>
+        `;
+      } else {
+        hoaxResult.innerHTML = "❌ AI kesulitan menganalisis data ini. Silakan coba deskripsikan dengan kalimat berbeda.";
+      }
+
+    } catch (error) {
+      console.error(error);
+      hoaxResult.innerHTML = "❌ Gagal terhubung ke pusat data verifikasi AI. Periksa jaringan Anda.";
     }
   });
 }
 
-/* SAVE USER DATA */
+// Fungsi pembantu membaca file gambar menjadi string base64 untuk dikirim ke Gemini API
+function convertToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = error => reject(error);
+  });
+}
+
+
+/* SAVE USER DATA TO FIRESTORE */
 async function saveUserData(user) {
   try {
     const userRef = doc(db, "users", user.uid);
@@ -465,7 +530,7 @@ async function saveUserData(user) {
   }
 }
 
-/* LOAD LEADERBOARD */
+/* LOAD LEADERBOARD FROM FIRESTORE */
 async function loadLeaderboard() {
   const leaderboardList = document.getElementById("leaderboardList");
   if (!leaderboardList) return;
