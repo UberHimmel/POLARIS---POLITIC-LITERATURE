@@ -55,12 +55,22 @@
           <button id="startQuizBtn">Mulai Kuis</button>
         </div>
         <div class="card green" id="hoaxSection">
-          <h3>Detector Fitnah & Hoax</h3>
-          <p>Salin teks berita untuk mendeteksi potensi berita bohong.</p>
-          <textarea id="hoaxInput" placeholder="Tempel narasi berita di sini..."></textarea>
-          <button id="checkHoaxBtn">Periksa Berita</button>
-          <div id="hoaxResult"></div>
-        </div>
+  <h3>Detector Fitnah & Hoax AI</h3>
+  <p>Salin teks berita atau unggah gambar/tangkapan layar untuk mendeteksi potensi hoax.</p>
+  
+  <textarea id="hoaxInput" placeholder="Tempel narasi berita atau kutipan di sini..."></textarea>
+  
+  <div class="image-upload-wrapper" style="margin-top: 10px;">
+    <label for="hoaxImage" style="cursor:pointer; background:rgba(255,255,255,0.2); padding:8px 12px; border-radius:10px; display:inline-block; font-size:14px;">
+      <i class="fa-solid fa-image"></i> Unggah Gambar
+    </label>
+    <input type="file" id="hoaxImage" accept="image/*" style="display:none;">
+    <span id="fileName" style="font-size:12px; margin-left:10px; opacity:0.8;"></span>
+  </div>
+
+  <button id="checkHoaxBtn">Periksa dengan AI</button>
+  <div id="hoaxResult"></div>
+</div>
         <div class="card orange">
           <h3>Autentikasi Siswa</h3>
           <p>Daftar atau masuk untuk menyimpan progress peringkat XP.</p>
