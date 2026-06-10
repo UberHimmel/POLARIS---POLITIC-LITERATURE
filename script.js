@@ -1,23 +1,8 @@
 console.log("POLARIS AI READY 🚀");
 
-import {
-  auth,
-  db
-} from "./firebase.js";
-
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
-
-import {
-  doc,
-  setDoc,
-  collection,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+import { auth, db } from "./firebase.js";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+import { doc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 /* MENU SIDEBAR MOBILE */
 const menuBtn = document.querySelector(".menu-btn");
@@ -28,7 +13,7 @@ if (menuBtn && sidebar) {
   });
 }
 
-/* EFFEK MENGETIK HERO SECTIONS */
+/* EFEK MENGETIK HERO SECTION */
 const text = "Platform Literasi Politik untuk Generasi Melek, Kritis, dan Berpartisipasi";
 const typingText = document.getElementById("typing-text");
 let index = 0;
@@ -45,9 +30,7 @@ typeEffect();
 const loader = document.querySelector(".loader");
 window.addEventListener("load", () => {
   if (loader) {
-    setTimeout(() => {
-      loader.classList.add("hide");
-    }, 1500);
+    setTimeout(() => { loader.classList.add("hide"); }, 1500);
   }
 });
 
@@ -317,7 +300,7 @@ if (checkHoaxBtn) {
       const GEMINI_API_KEY = "AIzaSyDFYMS8Uf_8APgKQhZSOko7zUMBgnK8YJE";
       let url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-      let promptInstruction = "Kamu adalah sistem kecerdasan AI pemeriksa fakta terpercaya untuk Polaris. Analisis klaim teks atau gambar yang dikirimkan. Deteksi jika itu klaim palsu, rekayasa digital, kutipan sembarangan, atau fakta empiris. Berikan kesimpulan berparagraf. Paling penting: Kamu WAJIB mencantumkan satu atau beberapa tautan web aktif (URL hidup) sebagai bukti rujukan konkrit (misalnya dari turnbackhoax.id, cekfakta.com, kominfo.go.id, atau media nasional tepercaya). Format link rujukan wajib menggunakan tag HTML anchor, contoh: <a href='https://link-rujukan.com' target='_blank' style='color:#A78BFA; font-weight:bold; text-decoration:underline;'>Buka Sumber Fakta</a>. Jangan pakai format markdown.";
+      let promptInstruction = "Kamu adalah sistem kecerdasan AI pemeriksa fakta terpercaya untuk Polaris. Analisis klaim teks atau gambar yang dikirimkan. Deteksi jika itu klaim palsu, rekayasa digital, kutipan sembarangan, atau fakta empiris. Berikan kesimpulan berparagraf. Paling penting: Kamu WAJIB mencantumkan satu atau beberapa tautan web aktif (URL hidup) sebagai bukti rujukan konkrit (misalnya dari turnbackhoax.id, cekfakta.com, kominfo.go.id, atau media nasional tepercaya). Format link rujukan wajib menggunakan tag HTML anchor, contoh: <a href='https://link-rujukan.com' target='_blank' style='color:#A78BFA; font-weight:bold; text-decoration:underline;'>Buka Sumber Fakta</a>. Jangan pakai format markdown. Seluruh output harus menggunakan variasi tag HTML paragraf (<p>) dan pemisah baris (<br>).";
 
       let contentsPayload = [];
 
