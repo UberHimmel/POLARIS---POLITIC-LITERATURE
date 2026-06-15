@@ -52,7 +52,9 @@ if (openChat && aiPopup) {
   });
 }
 
-/* CHAT BOT VIRTUAL ASSISTANT SYSTEM */
+/* ====================================================================
+   🚀 UPGRADE: CHAT BOT VIRTUAL ASSISTANT SYSTEM (LIVE GEMINI AI ENGINE)
+   ==================================================================== */
 const sendAI = document.getElementById("sendAI");
 const aiInput = document.getElementById("aiInput");
 const aiBody = document.getElementById("aiBody");
@@ -64,11 +66,12 @@ if (aiInput) {
   });
 }
 
-function sendMessage() {
+async function sendMessage() {
   if (!aiInput || !aiBody) return;
   const textVal = aiInput.value.trim();
   if (textVal === "") return;
 
+  // 1. Tampilkan pesan user ke layar
   const userMsg = document.createElement("div");
   userMsg.classList.add("user-message");
   userMsg.innerText = textVal;
@@ -78,50 +81,61 @@ function sendMessage() {
   aiInput.value = "";
   aiBody.scrollTop = aiBody.scrollHeight;
 
+  // 2. Tampilkan indikator animasi mengetik
   const typing = document.createElement("div");
   typing.classList.add("ai-message", "typing");
-  typing.innerText = "POLARIS AI sedang mengetik...";
+  typing.innerText = "POLARIS AI sedang berpikir kritis...";
   aiBody.appendChild(typing);
   aiBody.scrollTop = aiBody.scrollHeight;
 
-  setTimeout(() => {
+  try {
+    // 3. Ambil respons dinamis dari API Gemini
+    const botResponse = await fetchLiveAIResponse(textVal);
     typing.remove();
+
+    // 4. Render respons ke dalam box chat
     const botMsg = document.createElement("div");
     botMsg.classList.add("ai-message");
-    typeBotMessage(botMsg, getAIResponse(textVal));
+    
+    // Konversi format markdown bold bawaan AI ke tag HTML b
+    let formattedText = botResponse.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+    formattedText = formattedText.replace(/\n/g, '<br>');
+    
+    botMsg.innerHTML = formattedText;
     aiBody.appendChild(botMsg);
     aiBody.scrollTop = aiBody.scrollHeight;
     saveChat();
-  }, 1200);
-}
 
-function getAIResponse(message) {
-  message = message.toLowerCase();
-  if (message.includes("halo") || message.includes("hai")) return "Halo Polarisian! 🚀 Ada topik politik atau demokrasi yang ingin kamu bahas?";
-  if (message.includes("politik")) return "Politik adalah proses pengambilan keputusan dalam masyarakat dan negara 🌍";
-  if (message.includes("demokrasi")) return "Demokrasi adalah sistem dimana rakyat memiliki hak memilih dan menyampaikan pendapat 👥";
-  if (message.includes("pemilu")) return "Pemilu adalah sarana demokrasi untuk memilih pemimpin dan wakil rakyat 🗳️";
-  return "Aku POLARIS AI 🚀 Gunakan modul Cek Fakta di menu utama untuk analisis hoaks menggunakan basis data real-time cerdas.";
-}
-
-function typeBotMessage(element, text) {
-  let i = 0;
-  function typing() {
-    if (element && aiBody && i < text.length) {
-      element.innerHTML += text.charAt(i);
-      i++;
-      aiBody.scrollTop = aiBody.scrollHeight;
-      setTimeout(typing, 20);
-    }
+  } catch (error) {
+    typing.remove();
+    console.error(error);
   }
-  typing();
 }
 
-function saveChat() { if (aiBody) localStorage.setItem("polarisChat", aiBody.innerHTML); }
-window.addEventListener("load", () => {
-  const savedChat = localStorage.getItem("polarisChat");
-  if (savedChat && aiBody) aiBody.innerHTML = savedChat;
-});
+// Fungsi independen untuk memanggil kecerdasan Gemini AI secara dynamic
+async function fetchLiveAIResponse(userMessage) {
+  const GEMINI_API_KEY = "AIzaSyDFYMS8Uf_8APgKQhZSOko7zUMBgnK8YJE";
+  let url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+  
+  const systemInstruction = "Kamu adalah POLARIS AI, sebuah asisten virtual politik yang cerdas, kritis, objektif, dan edukatif. Bantu pengguna menjawab pertanyaan seputar sistem pemerintahan, demokrasi, pemilu, hukum, atau sejarah dengan gaya bahasa ringkas yang mudah dipahami remaja/pemilih pemula. Jika ditanya di luar topik politik atau kewarganegaraan, ingatkan mereka secara sopan untuk kembali ke topik literasi politik.";
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{
+        parts: [{ text: `${systemInstruction}\n\nPertanyaan Pengguna: "${userMessage}"` }]
+      }]
+    })
+  });
+
+  const data = await response.json();
+  if (data.candidates && data.candidates[0].content.parts[0].text) {
+    return data.candidates[0].content.parts[0].text;
+  } else {
+    return "Maaf Polarisian, aku tidak dapat memproses jawaban tersebut. Coba ajukan pertanyaan dengan kalimat lain.";
+  }
+}
 
 /* INTEGRASI INTERAKTIF LEVELING & XP SYSTEM */
 let xp = 0; let level = 1;
@@ -266,7 +280,6 @@ onAuthStateChanged(auth, (user) => {
   else { userName.innerHTML = "Belum Login"; logoutBtn.style.display = "none"; }
 });
 
-
 /* ====================================================================
    🔥 MODUL INDEPENDEN: CEK FAKTA MULTIMODAL REAL-TIME (GEMINI AI ENGINE)
    ==================================================================== */
@@ -290,7 +303,7 @@ if (checkHoaxBtn) {
     const imageFile = hoaxImageInput ? hoaxImageInput.files[0] : null;
 
     if (textValue === "" && !imageFile) {
-      hoaxResult.innerHTML = "⚠️ Harap ketik klaim kutipan atau masukkan file gambar!";
+      hoaxResult.innerHTML = "⚠️ Harap ketik klaim kutipan berita atau unggah file gambar bukti!";
       return;
     }
 
@@ -300,7 +313,7 @@ if (checkHoaxBtn) {
       const GEMINI_API_KEY = "AIzaSyDFYMS8Uf_8APgKQhZSOko7zUMBgnK8YJE";
       let url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-      let promptInstruction = "Kamu adalah sistem kecerdasan AI pemeriksa fakta terpercaya untuk Polaris. Analisis klaim teks atau gambar yang dikirimkan. Deteksi jika itu klaim palsu, rekayasa digital, kutipan sembarangan, atau fakta empiris. Berikan kesimpulan berparagraf. Paling penting: Kamu WAJIB mencantumkan satu atau beberapa tautan web aktif (URL hidup) sebagai bukti rujukan konkrit (misalnya dari turnbackhoax.id, cekfakta.com, kominfo.go.id, atau media nasional tepercaya). Format link rujukan wajib menggunakan tag HTML anchor, contoh: <a href='https://link-rujukan.com' target='_blank' style='color:#A78BFA; font-weight:bold; text-decoration:underline;'>Buka Sumber Fakta</a>. Jangan pakai format markdown. Seluruh output harus menggunakan variasi tag HTML paragraf (<p>) dan pemisah baris (<br>).";
+      let promptInstruction = "Kamu adalah sistem AI pemeriksa fakta terpercaya untuk platform Polaris. Analisis klaim teks atau gambar yang dilampirkan secara kritis. Deteksi apakah materi tersebut mengandung unsur hoaks, manipulasi digital, disinformasi, atau fakta riil. Berikan kesimpulan akhir yang jelas. Kamu WAJIB menyertakan minimal satu link referensi tiruan atau asli dari situs tepercaya (seperti turnbackhoax.id, cekfakta.com, atau kominfo.go.id). Format link rujukan wajib menggunakan tag HTML murni, contoh: <a href='https://cekfakta.com' target='_blank' style='color:#FFD93D; font-weight:bold;'>Buka Sumber Fakta</a>. Jangan gunakan format markdown (seperti [text](url)). Gunakan tag <br> untuk baris baru.";
 
       let contentsPayload = [];
 
@@ -308,13 +321,13 @@ if (checkHoaxBtn) {
         const base64Data = await convertToBase64(imageFile);
         contentsPayload = [{
           parts: [
-            { text: `${promptInstruction}\nKonteks teks tambahan: "${textValue}"` },
+            { text: `${promptInstruction}\nKonteks deskripsi teks tambahan dari pengguna: "${textValue}"` },
             { inlineData: { mimeType: imageFile.type, data: base64Data } }
           ]
         }];
       } else {
         contentsPayload = [{
-          parts: [{ text: `${promptInstruction}\nTeks klaim: "${textValue}"` }]
+          parts: [{ text: `${promptInstruction}\nTeks klaim berita: "${textValue}"` }]
         }];
       }
 
@@ -328,25 +341,29 @@ if (checkHoaxBtn) {
       
       if (resultData.candidates && resultData.candidates[0].content.parts[0].text) {
         let aiOutput = resultData.candidates[0].content.parts[0].text;
+        
+        // Membersihkan konversi tanda baca cetak tebal bawaan markdown ke HTML murni
         aiOutput = aiOutput.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+        aiOutput = aiOutput.replace(/\n/g, '<br>');
 
         hoaxResult.innerHTML = `
-          <div style="border-left: 4px solid #00B894; padding-left: 12px; line-height: 1.6; background: rgba(255,255,255,0.04); padding: 15px; border-radius: 12px; margin-top:15px;">
-            📊 <b>Hasil Analisis Cerdas POLARIS AI:</b><br><br>
+          <div style="border-left: 4px solid #FF9F1C; padding-left: 12px; line-height: 1.6; background: rgba(255,255,255,0.04); padding: 15px; border-radius: 12px; margin-top:15px;">
+            📊 <b>Hasil Analisis Multi-Modul POLARIS AI:</b><br><br>
             ${aiOutput}
           </div>
         `;
       } else {
-        hoaxResult.innerHTML = "❌ AI mengalami kesalahan struktur pembacaan data. Coba berikan deskripsi teks yang lebih jelas.";
+        hoaxResult.innerHTML = "❌ AI gagal mengurai struktur gambar. Pastikan format gambar valid dan coba lagi.";
       }
 
     } catch (error) {
       console.error(error);
-      hoaxResult.innerHTML = "❌ Terjadi kendala enkripsi jaringan dengan satelit server AI. Silakan coba lagi.";
+      hoaxResult.innerHTML = "❌ Terjadi kendala dekripsi jaringan dengan satelit server AI. Silakan coba lagi.";
     }
   });
 }
 
+// Fungsi helper untuk mengubah gambar ke teks base64 agar bisa dibaca oleh Gemini AI
 function convertToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
